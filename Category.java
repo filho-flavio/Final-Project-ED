@@ -14,7 +14,6 @@ public class Category {
         this.keywords = keywords;
         this.parentId = parentId;
         this.subcategories = new ArrayList<>();
-
     }
 
     // Getters and Setters

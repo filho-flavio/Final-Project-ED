@@ -9,25 +9,26 @@ public class Tree {
         this.root = root;
     }
 
+    // Method for categories empty keywords inherit keywords froim their parents
     public void heritage(HashMap<Integer, Category> categories) {
         for (Category category : categories.values()) {
             if (category.getKeywords().isEmpty()) {
                 int parentId = category.getParendId();
                 if (parentId != -1) {
                     Category parent = categories.get(parentId);
-                    if (parent != null) {
-                        category.setKeywords(parent.getKeywords());
-                    }
+                    category.setKeywords(parent.getKeywords());
                 }
             }
         }
     }
 
+    // Method for get Level of a category
     public int getLevel(Category category) {
         return getLevelRecursive(root, category, 0);
     }
 
     private int getLevelRecursive(Category currentCategory, Category targetCategory, int currentLevel) {
+        // verifying if is the current
         if (currentCategory.equals(targetCategory)) {
             return currentLevel;
         }
@@ -51,7 +52,6 @@ public class Tree {
 
     private void searchCategoriesByKeyword(Category currentCategory, String keyword, List<String[]> result) {
         if (currentCategory.getKeywords().contains(keyword)) {
-            // Se possuir, cria um array com os dados e adiciona à lista de resultados.
             String[] categoryData = {
                     String.valueOf(currentCategory.getId()),
                     String.valueOf(getLevel(currentCategory)),
@@ -61,9 +61,7 @@ public class Tree {
             result.add(categoryData);
         }
 
-        // Percorre as subcategorias da categoria atual.
         for (Category subcategory : currentCategory.getSubcategories()) {
-            // Chama recursivamente o método para cada subcategoria.
             searchCategoriesByKeyword(subcategory, keyword, result);
         }
     }
@@ -90,7 +88,7 @@ public class Tree {
 
         jsonOutput.append("]\n");
 
-        System.out.println(jsonOutput.toString());
+        System.out.println(jsonOutput);
     }
 
     // Method get categories and details

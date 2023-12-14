@@ -14,6 +14,7 @@ public class Main {
                 { 8, "Eletrodomésticos de Cozinha", "", 5 },
                 { 9, "Eletrodomésticos em Geral", "", 5 },
                 // { 10, "Cama, Mesa e Banho", "Casa", 4 },
+                // {11, "Peças para eletrônicos", "Peças, Eletrônicos", 3}
         };
 
         // Hash with categories
@@ -44,15 +45,23 @@ public class Main {
         myTree.heritage(categories);
         // myTree.printTree(root, 0);
 
-        // Getting the level of category
-        Category targetCategory = categories.get(1);
-        int level = myTree.getLevel(targetCategory);
-        System.out.println("\nLevel of the category: " + level);
 
-        List<String[]> categoriesResult = myTree.getCategoryByKeyword("Casa");
+        // Getting the level of category
+        Category targetCategory = categories.get(5);
+        int level = myTree.getLevel(targetCategory);
+        if (level == -1) {
+            System.out.println("The category doesn't exist.");
+        } else {
+            System.out.println("\nLevel of the category: " + level);
+        }
+
+        // Getting the categories by keyword
+        List<String[]> categoriesResult = myTree.getCategoryByKeyword("Casa, Eletrodomésticos");
 
         myTree.printCategories(categoriesResult);
 
+
+        // Getting details about category by id
         myTree.getDetailsByCategory(categories, 3);
 
         // Category searching = categories.get(3);
