@@ -1,15 +1,30 @@
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
-class Tree {
+public class Tree {
     private Category root;
 
     public Tree(Category root) {
         this.root = root;
     }
 
+    public void heritage(HashMap<Integer, Category> categories) {
+        for (Category category : categories.values()) {
+            if (category.getKeywords().isEmpty()) {
+                int parentId = category.getParendId();
+                if (parentId != -1) {
+                    Category parent = categories.get(parentId);
+                    if (parent != null) {
+                        category.setKeywords(parent.getKeywords());
+                    }
+                }
+            }
+        }
+    }
+
     public int getLevel(Category category) {
-        return getLevelRecursive(root, category, 1);
+        return getLevelRecursive(root, category, 0);
     }
 
     private int getLevelRecursive(Category currentCategory, Category targetCategory, int currentLevel) {
@@ -20,13 +35,14 @@ class Tree {
         for (Category subcategory : currentCategory.getSubcategories()) {
             int level = getLevelRecursive(subcategory, targetCategory, currentLevel + 1);
             if (level != -1) {
-                return level; // Encontrou a categoria, retorna o nível
+                return level; // Level found
             }
         }
 
-        return -1; // Categoria não encontrada na subárvore atual
+        return -1; // Category not found in this level
     }
 
+    // Method to search categories by keyword
     public List<String[]> getCategoryByKeyword(String keyword) {
         List<String[]> result = new ArrayList<>();
         searchCategoriesByKeyword(root, keyword, result);
@@ -52,38 +68,71 @@ class Tree {
         }
     }
 
-    public static void printCategories(List<String[]> categoriesResult) {
-        StringBuilder jsonOutput = new StringBuilder("[\n");
-    
+    public void printCategories(List<String[]> categoriesResult) {
+        StringBuilder jsonOutput = new StringBuilder("\n[");
+
         for (int i = 0; i < categoriesResult.size(); i++) {
             String[] categoryData = categoriesResult.get(i);
-    
+
+            String[] keywordsArray = categoryData[2].split(" ");
+            String formattedKeywords = splitKeywords(keywordsArray);
             jsonOutput.append("{");
-            jsonOutput.append("\"ID\": \"" + categoryData[0] + "\", ");
-            jsonOutput.append("\"Nível\": \"" + categoryData[1] + "\", ");
-            jsonOutput.append("\"Nome\": \"" + categoryData[2] + "\", ");
-            jsonOutput.append("\"Palavra-chave\": \"" + categoryData[3] + "\", ");
-            jsonOutput.append("\"------\": \"------\"");
+            jsonOutput.append("\"" + categoryData[0] + "\", ");
+            jsonOutput.append("\"" + categoryData[1] + "\", ");
+            jsonOutput.append(formattedKeywords + ", ");
+            jsonOutput.append("\"" + categoryData[3] + "\"");
             jsonOutput.append("}");
-    
+
             if (i < categoriesResult.size() - 1) {
                 jsonOutput.append(",\n");
             }
         }
-    
-        jsonOutput.append("\n]");
-    
+
+        jsonOutput.append("]\n");
+
         System.out.println(jsonOutput.toString());
     }
-    
 
+    // Method get categories and details
+    public void getDetailsByCategory(HashMap<Integer, Category> categories, int id) {
+        StringBuilder jsonOutput = new StringBuilder("\n[");
+
+        for (Category category : categories.values()) {
+            if (category.getId() == id) {
+                int level = getLevel(category);
+                String[] keywordsArray = category.getKeywords().split(", ");
+                String formattedKeywords = splitKeywords(keywordsArray);
+                jsonOutput.append("{");
+                jsonOutput.append("\"" + level + "\", ");
+                jsonOutput.append(formattedKeywords);
+                jsonOutput.append("}");
+            }
+        }
+        jsonOutput.append("]\n");
+        System.out.println(jsonOutput);
+    }
+
+    // Method to print split keywords
+    private String splitKeywords(String[] keywordsArray) {
+        StringBuilder formattedKeywords = new StringBuilder();
+        for (int i = 0; i < keywordsArray.length; i++) {
+            formattedKeywords.append("\"").append(keywordsArray[i]).append("\"");
+            if (i < keywordsArray.length - 1) {
+                formattedKeywords.append(", ");
+            }
+        }
+        return formattedKeywords.toString();
+    }
+
+    // Print tree
     public void printTree(Category category, int level) {
         StringBuilder indentation = new StringBuilder();
         for (int i = 0; i < level; i++) {
             indentation.append("  ");
         }
 
-        System.out.println(indentation.toString() + category.getNameCategory() + " - " + category.getKeywords());
+        System.out.println(indentation.toString() + category.getId() + " " + category.getNameCategory() + " - "
+                + category.getKeywords());
 
         for (Category subcategory : category.getSubcategories()) {
             printTree(subcategory, level + 1);

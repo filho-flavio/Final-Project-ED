@@ -12,11 +12,14 @@ public class Main {
                 { 6, "Eletrodomésticos Secundários", "", 4 }, // level 3
                 { 7, "Gramado e Jardim", "Gramado, Jardim", 6 }, // level
                 { 8, "Eletrodomésticos de Cozinha", "", 5 },
-                { 9, "Eletrodomésticos em Geral", "", 5 }
+                { 9, "Eletrodomésticos em Geral", "", 5 },
+                // { 10, "Cama, Mesa e Banho", "Casa", 4 },
         };
 
+        // Hash with categories
         HashMap<Integer, Category> categories = new HashMap<>();
 
+        // Filling in the hash categories with each row and attributes
         for (Object[] row : data) {
             int id = (int) row[0];
             String name = (String) row[1];
@@ -31,24 +34,28 @@ public class Main {
         for (Category category : categories.values()) {
             if (category.getParendId() != -1) {
                 // Get the parentId of each category and create a parent
-                Category parent = categories.get(category.getParendId());
-                parent.subcategories.add(category);
+                Category parent = categories.get(category.getParendId()); // First I get the root
+                parent.subcategories.add(category); // Adding ID 2 as child
             }
         }
 
         Category root = categories.get(1);
         Tree myTree = new Tree(root);
+        myTree.heritage(categories);
+        // myTree.printTree(root, 0);
 
         // Getting the level of category
-        Category targetCategory = categories.get(2);
+        Category targetCategory = categories.get(1);
         int level = myTree.getLevel(targetCategory);
-        System.out.println("Level of the category: " + level);
+        System.out.println("\nLevel of the category: " + level);
 
         List<String[]> categoriesResult = myTree.getCategoryByKeyword("Casa");
 
         myTree.printCategories(categoriesResult);
 
-        // myTree.printTree(root, 0);
+        myTree.getDetailsByCategory(categories, 3);
+
+        // Category searching = categories.get(3);
 
         // for(Category category : categories.values()){
         // System.out.println("ID: " + category.getId() + ", Nome: " +
