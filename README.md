@@ -1,4 +1,4 @@
-Projeto de Estrutura de Dados em Java
+# Projeto de Estrutura de Dados em Java
 **Descrição do Projeto:**
 
 Este projeto implementa uma estrutura de dados para gerenciar categorias de produtos em um e-commerce. A estrutura utiliza uma combinação de classes `Category` e `Tree` para organizar as categorias de forma hierárquica e permitir a navegação eficiente entre elas.
